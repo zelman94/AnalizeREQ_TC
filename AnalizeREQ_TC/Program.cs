@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 //Create COM Objects.Create a COM object for everything that is referenced
 
+//C:\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Excel\15.0.0.0__71e9bce111e9429c dodać referencje z palca
 
 namespace AnalizeREQ_TC
 {
