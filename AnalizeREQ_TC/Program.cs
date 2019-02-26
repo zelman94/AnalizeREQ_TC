@@ -22,16 +22,42 @@ namespace AnalizeREQ_TC
         {
             TC_ID_List = TC_ID_List_C;
             REQ_List = REQ_List_C;
-
         }
 
         public void SplitREQ()
         {
             foreach (var item in REQ_List)
             {
-                REQs_.Add(item.Split(';').ToList());
+                List<string> tmpListOfREQs = item.Split(',').ToList();
+                List<string> tmpList = new List<string>();
+                foreach (var item2 in tmpListOfREQs)
+                {
+                    string tmp = item2;
+                    tmp = tmp.Replace("https://doors.dgs.com:8443/dwa/rm/urn:rational::1-4fa78175254e4271-O-", "");
+                    tmp = tmp.Replace("-0000232f", "");
+                    tmpList.Add(tmp);
+                }
+                REQs_.Add(tmpList);
+
+                //REQs_.Add(item.Split(',').ToList());
             }
             REQ_List.Clear();
+        }
+
+        public void convertLinkToREQ_Number()
+        {
+            for (int i = 0; i < REQs_.Count(); i++)
+            {
+                int j = 0;
+                foreach (var item in REQs_[i])
+                {
+                    string tmp = item;
+                    tmp = tmp.Replace("https://doors.dgs.com:8443/dwa/rm/urn:rational::1-4fa78175254e4271-O-", "");
+                    tmp = tmp.Replace("- 0000232f", "");
+                    REQs_[i][j] = tmp;
+                    j++;
+                }
+            }
         }
 
         public void getAllREQFromTCs()
@@ -67,9 +93,9 @@ namespace AnalizeREQ_TC
                         count++;
                     }
                 }
-                if (count > 1)
-                {
-                    Console.Write(item + " Exist: " + count + " x in:\n");
+                //if (count > 1)
+                //{
+                    Console.Write("REQ: " + item + " Exist: " + count + " x in TC :\n");
                     for (int i = 0; i < TC_List.Count(); i++)
                     {
                         if (TC_List[i].checkIfREQ_Exist(item))
@@ -77,9 +103,9 @@ namespace AnalizeREQ_TC
                             Console.WriteLine("\t"+TC_List[i].ID);
                         }
                     }
-                }
-                else
-                Console.WriteLine(item +" Exist: " + count + " x");
+                //}
+                //else
+                //Console.WriteLine("REQ: " + item + " Exist: " + count + " x in TC :");
             }
 
         }
@@ -215,9 +241,13 @@ namespace AnalizeREQ_TC
         
         static void Main(string[] args)
         {
-           TestPlan MyTestPlan = getExcelFile(); //oject with list of REQ and TC IDs
+
+            Console.WriteLine("Path to xlsx file");
+            
+           TestPlan MyTestPlan = getExcelFile(Console.ReadLine()); //oject with list of REQ and TC IDs
 
             MyTestPlan.SplitREQ();
+           // MyTestPlan.convertLinkToREQ_Number();
             MyTestPlan.CreateTCs();
             MyTestPlan.CreateREQs();
             //MyTestPlan.printAll_REQ();
@@ -228,7 +258,7 @@ namespace AnalizeREQ_TC
 
         }
 
-        public static TestPlan getExcelFile()
+        public static TestPlan getExcelFile(string path)
         {
 
             List<string> TC_ID_List = new List<string>(); // list of ID of TC
@@ -237,7 +267,7 @@ namespace AnalizeREQ_TC
 
             //Create COM Objects. Create a COM object for everything that is referenced
             Excel.Application xlApp = new Excel.Application();
-            Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(@"C:\Users\Pawel\source\repos\AnalizeREQ_TC\AnalizeREQ_TC\test.xlsx");
+            Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(path);//@"C:\Users\paze\Documents\GitHub\AnalizeREQ_TC\AnalizeREQ_TC\test.xlsx"
             Excel._Worksheet xlWorksheet = xlWorkbook.Sheets[1];
             Excel.Range xlRange = xlWorksheet.UsedRange;
 
