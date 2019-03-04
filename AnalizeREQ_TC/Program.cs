@@ -79,6 +79,15 @@ namespace AnalizeREQ_TC
             }
         }
 
+        public void showUniqueREQ()
+        {
+            List<string> uniqueREQ = REQ_List.Select(x => x).Distinct().ToList();
+            foreach (var item in uniqueREQ)
+            {
+                Console.WriteLine(item);
+            }
+        }
+
         public void showDoubleCoverage()
         {
             List<string> uniqueREQ = REQ_List.Select(x => x).Distinct().ToList();
@@ -252,7 +261,9 @@ namespace AnalizeREQ_TC
             MyTestPlan.CreateREQs();
             //MyTestPlan.printAll_REQ();
             MyTestPlan.printAll_TC_REQ();
+
             MyTestPlan.getAllREQFromTCs();
+            MyTestPlan.showUniqueREQ();
             //MyTestPlan.showAllREQ();
             MyTestPlan.showDoubleCoverage();
 
